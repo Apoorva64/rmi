@@ -1,0 +1,9 @@
+server/AuthServiceImpl.class
+server/AuthService.class
+server/RMIServiceImpl.class
+server/VotingServiceImpl.class
+server/CandidateImpl.class
+server/VotingService.class
+server/Server.class
+server/UserImpl.class
+server/OTP.class
