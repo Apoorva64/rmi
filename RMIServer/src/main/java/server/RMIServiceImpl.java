@@ -37,7 +37,7 @@ public class RMIServiceImpl extends UnicastRemoteObject implements RMIService {
     }
 
     @Override
-    public Map<ID, Integer> requestResult() throws RemoteException {
+    public VoteResult requestResult() throws RemoteException {
         return votingService.requestResult();
     }
 }

@@ -3,6 +3,7 @@ package server;
 import data.ID;
 import data.VoteValue;
 import interfaces.Candidate;
+import interfaces.VoteResult;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -35,7 +36,13 @@ public class VotingServiceImpl implements VotingService {
     }
 
     @Override
-    public Map<ID, Integer> requestResult() {
-        return Map.copyOf(voteValues);
+    public VoteResult requestResult() {
+        try {
+            return new VoteResultImpl(voteValues);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            System.exit(1);
+            return null;
+        }
     }
 }

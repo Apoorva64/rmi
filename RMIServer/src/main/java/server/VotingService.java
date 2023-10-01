@@ -3,6 +3,7 @@ package server;
 import data.ID;
 import data.VoteValue;
 import interfaces.Candidate;
+import interfaces.VoteResult;
 
 import java.util.List;
 import java.util.Map;
@@ -12,5 +13,5 @@ public interface VotingService {
 
     void vote(Map<ID, VoteValue> vote);
 
-    Map<ID, Integer> requestResult();
+    VoteResult requestResult();
 }
