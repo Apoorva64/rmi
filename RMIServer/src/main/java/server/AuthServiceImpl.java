@@ -8,26 +8,29 @@ import interfaces.User;
 
 import java.rmi.RemoteException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
  * A simple implementation of a printing interface.
  */
 public class AuthServiceImpl implements AuthService {
-    public static List<User> users;
+    private static UserList users;
     Map<ID, OTP> otps = new HashMap<>();
 
-    protected AuthServiceImpl(List<User> users) {
+    protected AuthServiceImpl(UserList users) throws RemoteException {
         super();
         AuthServiceImpl.users = users;
+    }
+
+    public static UserList getUsers() {
+        return users;
     }
 
     @Override
     public String authentificate(ID studentNumber, ClientPasswordRequester passwordRequester) throws AuthenticationFailure {
         try {
             String password = passwordRequester.requestPassword();
-            for (User user : users) {
+            for (User user : users.voters()) {
                 if (user.getStudentNumber().equals(studentNumber) && user.checkPassword(password)) {
                     return generateOTP(studentNumber);
                 }
@@ -49,6 +52,4 @@ public class AuthServiceImpl implements AuthService {
         }
         throw new InvalidVoteCredentials();
     }
-
-
 }

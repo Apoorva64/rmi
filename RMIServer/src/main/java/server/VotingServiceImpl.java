@@ -24,10 +24,7 @@ public class VotingServiceImpl implements VotingService {
 
     @Override
     public List<Candidate> getCandidates() {
-        return AuthServiceImpl.users.stream()
-                .filter(Candidate.class::isInstance)
-                .map(c -> (Candidate) c)
-                .toList();
+        return AuthServiceImpl.getUsers().candidates();
     }
 
     @Override

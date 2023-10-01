@@ -9,7 +9,6 @@ import interfaces.User;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Server {
@@ -29,13 +28,9 @@ public class Server {
     }
 
     private static RMIServiceImpl getRmiService() {
-        var candidates = getCandidates();
-        var users = new ArrayList<>(getUsers());
-
-        users.addAll(candidates.stream().map(c -> (User) c).toList());
-
         try {
-            var votingService = new VotingServiceImpl(candidates);
+            var users = new AuthService.UserList(getVoters(), getCandidates());
+            var votingService = new VotingServiceImpl(users.candidates());
             var authService = new AuthServiceImpl(users);
             return new RMIServiceImpl(votingService, authService);
         } catch (RemoteException e) {
@@ -62,7 +57,7 @@ public class Server {
         // TODO: do not hardcode candidates
     }
 
-    public static List<User> getUsers() {
+    public static List<User> getVoters() {
         try {
             return List.of(
                     new UserImpl(new ID("123456"), "password")
