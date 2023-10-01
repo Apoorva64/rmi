@@ -5,6 +5,7 @@ import data.VoteValue;
 import interfaces.Candidate;
 import interfaces.RMIService;
 
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.util.Arrays;
@@ -18,30 +19,31 @@ public class Client {
 
     public static void main(String[] args) {
         try {
-            var registry = LocateRegistry.getRegistry("127.0.0.1", 1099);
-            var service = (RMIService) registry.lookup(RMIService.RMI_NAME);
+            var service = getRmiService();
 
             List<Candidate> candidates = service.listCandidates();
 
-            // readline
             System.out.println("Enter your student number: ");
             var studentNumber = new ID(readLine());
 
             var passwordRequester = new ClientPasswordRequesterImpl();
             var otp = service.getVoteMaterial(studentNumber, passwordRequester);
 
-            System.out.println("One-time password: " + otp);
-
             Map<ID, VoteValue> votes = getVotes(candidates);
             service.vote(votes, studentNumber, otp);
 
-            System.out.println("Result: " + service.requestResult());
+            System.out.println("Result: " + service.requestResult().toPrettyString());
 
             System.exit(0); // with RMI, we need to exit manually
         } catch (Exception e) {
-            System.err.println("Exception:");
             e.printStackTrace();
+            System.exit(1);
         }
+    }
+
+    private static RMIService getRmiService() throws RemoteException, NotBoundException {
+        var registry = LocateRegistry.getRegistry("127.0.0.1", 1099);
+        return (RMIService) registry.lookup(RMIService.RMI_NAME);
     }
 
     private static Map<ID, VoteValue> getVotes(List<Candidate> candidates) throws RemoteException {

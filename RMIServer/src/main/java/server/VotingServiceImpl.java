@@ -31,7 +31,7 @@ public class VotingServiceImpl implements VotingService {
     @Override
     public void vote(Map<ID, VoteValue> vote) {
         for (var entry : vote.entrySet()) {
-            voteValues.compute(entry.getKey(), (candidate, integer) -> integer + entry.getValue().value());
+            voteValues.computeIfPresent(entry.getKey(), (candidate, integer) -> integer + entry.getValue().value());
         }
     }
 
