@@ -37,6 +37,7 @@ public class Client {
 
             System.out.println("Result: " + service.requestResult());
 
+            System.exit(0); // with RMI, we need to exit manually
         } catch (Exception e) {
             System.err.println("Exception:");
             e.printStackTrace();
