@@ -2,7 +2,9 @@ package client;
 
 import data.ID;
 import data.VoteValue;
+import interfaces.AuthenticationFailure;
 import interfaces.Candidate;
+import interfaces.InvalidVoteCredentials;
 import interfaces.RMIService;
 
 import java.rmi.NotBoundException;
@@ -25,21 +27,41 @@ public class Client {
             List<Candidate> candidates = service.listCandidates();
 
             System.out.println("Enter your student number: ");
+
             var studentNumber = new ID(readLine());
-
-            var passwordRequester = new ClientPasswordRequesterImpl();
-            var otp = service.getVoteMaterial(studentNumber, passwordRequester);
-
-            Map<ID, VoteValue> votes = getVotes(candidates);
-            service.vote(votes, studentNumber, otp);
+            var otp = getOtp(service, studentNumber);
+            vote(candidates, service, studentNumber, otp);
 
             System.out.println("Result: " + service.requestResult().toPrettyString());
 
             System.exit(0); // with RMI, we need to exit manually
-        } catch (Exception e) {
+        } catch (RemoteException | NotBoundException e) {
             exitWithException(e);
         }
     }
+
+    private static void vote(List<Candidate> candidates, RMIService service, ID studentNumber, String otp) throws RemoteException {
+        Map<ID, VoteValue> votes = getVotes(candidates);
+        try {
+            service.vote(votes, studentNumber, otp);
+        } catch (InvalidVoteCredentials e) {
+            System.out.println("You have already voted");
+            System.exit(0);
+        }
+    }
+
+    private static String getOtp(RMIService service, ID studentNumber) throws RemoteException {
+        var passwordRequester = new ClientPasswordRequesterImpl();
+
+        while (true) {
+            try {
+                return service.getVoteMaterial(studentNumber, passwordRequester);
+            } catch (AuthenticationFailure e) {
+                System.out.println("Wrong password, try again");
+            }
+        }
+    }
+
 
     private static RMIService getRmiService() throws RemoteException, NotBoundException {
         var registry = LocateRegistry.getRegistry("127.0.0.1", 1099);
