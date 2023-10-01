@@ -1,6 +1,7 @@
 package server;
 
 import data.ID;
+import data.Pitch;
 import interfaces.Candidate;
 import interfaces.RMIService;
 import interfaces.User;
@@ -49,9 +50,8 @@ public class Server {
     public static List<Candidate> getCandidates() {
         try {
             return List.of(
-                    new CandidateImpl(new ID("123456"), "password", "John Doe", "I am John Doe"),
-                    new CandidateImpl(new ID("654321"), "password", "Jane Doe", "I am Jane Doe")
-
+                    new CandidateImpl(new ID("123456"), "password", "John Doe", new Pitch.TextPitch("I am John Doe")),
+                    new CandidateImpl(new ID("654321"), "password", "Jane Doe", new Pitch.TextPitch("I am Jane Doe"))
             );
         } catch (Exception e) {
             e.printStackTrace();

@@ -17,10 +17,6 @@ public class Client {
             var service = (RMIService) registry.lookup(RMIService.RMI_NAME);
 
             List<Candidate> candidates = service.listCandidates();
-            System.out.println("Candidates:");
-            for (var candidate : candidates) {
-                System.out.println(candidate);
-            }
 
             // readline
             System.out.println("Enter your student number: ");
@@ -57,7 +53,10 @@ public class Client {
         ).forEach(System.out::println);
         int vote = 0;
         try {
-            System.out.println("Enter your vote for " + candidate.getName() + ": ");
+            System.out.println("Candidate: " + candidate.getName());
+            candidate.getPitch().display();
+
+            System.out.println("Enter your vote: ");
             vote = Integer.parseInt(new Scanner(System.in).nextLine());
         } catch (RemoteException e) {
             e.printStackTrace();

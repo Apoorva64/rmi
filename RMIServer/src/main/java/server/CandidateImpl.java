@@ -1,6 +1,7 @@
 package server;
 
 import data.ID;
+import data.Pitch;
 import interfaces.Candidate;
 
 import java.io.Serializable;
@@ -8,9 +9,9 @@ import java.rmi.RemoteException;
 
 public class CandidateImpl extends UserImpl implements Candidate, Serializable {
     String name;
-    String pitch;
+    Pitch pitch;
 
-    public CandidateImpl(ID id, String password, String name, String pitch) throws RemoteException {
+    public CandidateImpl(ID id, String password, String name, Pitch pitch) throws RemoteException {
         super(id, password);
 
         this.name = name;
@@ -28,7 +29,7 @@ public class CandidateImpl extends UserImpl implements Candidate, Serializable {
     }
 
     @Override
-    public String getPitch() throws RemoteException {
+    public Pitch getPitch() throws RemoteException {
         return pitch;
     }
 }
