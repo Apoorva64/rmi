@@ -7,7 +7,12 @@ import interfaces.RMIService;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static data.Utils.readLine;
 
 public class Client {
 
@@ -20,7 +25,7 @@ public class Client {
 
             // readline
             System.out.println("Enter your student number: ");
-            var studentNumber = new ID(new Scanner(System.in).nextLine());
+            var studentNumber = new ID(readLine());
 
             var passwordRequester = new ClientPasswordRequesterImpl();
             var otp = service.getVoteMaterial(studentNumber, passwordRequester);
@@ -57,7 +62,7 @@ public class Client {
             candidate.getPitch().display();
 
             System.out.println("Enter your vote: ");
-            vote = Integer.parseInt(new Scanner(System.in).nextLine());
+            vote = Integer.parseInt(readLine());
         } catch (RemoteException e) {
             e.printStackTrace();
         }
