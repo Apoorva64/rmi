@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static data.Utils.exitWithException;
+
 public class VotingServiceImpl implements VotingService {
     Map<ID, Integer> voteValues = new ConcurrentHashMap<>();
 
@@ -19,7 +21,7 @@ public class VotingServiceImpl implements VotingService {
                 voteValues.put(candidate.getStudentNumber(), 0);
             }
         } catch (RemoteException e) {
-            e.printStackTrace();
+            exitWithException(e);
         }
     }
 
@@ -40,8 +42,7 @@ public class VotingServiceImpl implements VotingService {
         try {
             return new VoteResultImpl(voteValues);
         } catch (RemoteException e) {
-            e.printStackTrace();
-            System.exit(1);
+            exitWithException(e);
             return null;
         }
     }

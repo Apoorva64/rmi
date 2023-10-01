@@ -10,6 +10,8 @@ import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static data.Utils.exitWithException;
+
 /**
  * A simple implementation of a printing interface.
  */
@@ -36,7 +38,7 @@ public class AuthServiceImpl implements AuthService {
                 }
             }
         } catch (RemoteException e) {
-            // TODO
+            exitWithException(e);
         }
         throw new AuthenticationFailure();
     }

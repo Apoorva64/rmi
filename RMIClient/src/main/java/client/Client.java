@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static data.Utils.exitWithException;
 import static data.Utils.readLine;
 
 public class Client {
@@ -36,8 +37,7 @@ public class Client {
 
             System.exit(0); // with RMI, we need to exit manually
         } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(1);
+            exitWithException(e);
         }
     }
 
@@ -67,7 +67,7 @@ public class Client {
             System.out.println("Enter your vote: ");
             vote = Integer.parseInt(readLine());
         } catch (RemoteException e) {
-            e.printStackTrace();
+            exitWithException(e);
         }
         return VoteValue.fromValue(vote);
     }

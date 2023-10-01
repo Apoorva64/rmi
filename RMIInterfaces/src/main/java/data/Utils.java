@@ -17,4 +17,14 @@ public final class Utils {
     public static String readLine() {
         return readLine("");
     }
+
+    public static void exitWithException(Exception e) {
+        System.err.println(e.getMessage());
+
+        System.err.println("Stack trace:");
+        e.printStackTrace();
+
+        System.err.println("Exiting...");
+        System.exit(1);
+    }
 }

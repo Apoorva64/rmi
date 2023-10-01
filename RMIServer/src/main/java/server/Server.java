@@ -11,6 +11,8 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.List;
 
+import static data.Utils.exitWithException;
+
 public class Server {
     public static void main(String[] args) {
         try {
@@ -19,9 +21,8 @@ public class Server {
             // Export the object.
             Registry registry = LocateRegistry.createRegistry(1099);
             registry.rebind(RMIService.RMI_NAME, implementation);
-        } catch (RemoteException ex) {
-            ex.printStackTrace();
-            return;
+        } catch (RemoteException e) {
+            exitWithException(e);
         }
         System.out.println("Bound!");
         System.out.println("Server will wait forever for messages.");
@@ -34,8 +35,7 @@ public class Server {
             var authService = new AuthServiceImpl(users);
             return new RMIServiceImpl(votingService, authService);
         } catch (RemoteException e) {
-            e.printStackTrace();
-            System.exit(1);
+            exitWithException(e);
             return null;
         }
 
@@ -49,8 +49,7 @@ public class Server {
                     new CandidateImpl(new ID("654321"), "password", "Jane Doe", new Pitch.TextPitch("I am Jane Doe"))
             );
         } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(1);
+            exitWithException(e);
             return null;
         }
 
@@ -64,11 +63,8 @@ public class Server {
 
             );
         } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(1);
+            exitWithException(e);
             return null;
         }
     }
-
-
 }
