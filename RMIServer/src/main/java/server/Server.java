@@ -15,6 +15,14 @@ import static data.Utils.exitWithException;
 
 public class Server {
     public static void main(String[] args) {
+        // TODO: handle start
+        // Set up the voting conditions: to do so, either the administrator
+        // (who launched the server) can type (in the server's console)
+        // the start and end dates, or the server can simply wait for a given key
+        // to start the vote and another key to stop it, or the vote can keep
+        // going until all users have voted, the choice is yours.
+
+
         try {
             RMIService implementation = getRmiService();
 
@@ -26,6 +34,15 @@ public class Server {
         }
         System.out.println("Bound!");
         System.out.println("Server will wait forever for messages.");
+
+        // TODO: The results are printed at server side at the end
+
+        // TODO: vote is over
+        // When the vote is over (how/when it happens depends on the configuration at server start):
+        //    - The score of each candidate is available (it may have been computed / modified each time
+        //    the vote took place by adding the scores to each candidate).
+        //    - The results are printed at server side
+        //    - They can also be retrieved at client side if needed
     }
 
     private static RMIServiceImpl getRmiService() {
@@ -39,7 +56,6 @@ public class Server {
             return null;
         }
 
-        // TODO: handle end
     }
 
     public static List<Candidate> getCandidates() {
@@ -54,6 +70,13 @@ public class Server {
         }
 
         // TODO: do not hardcode candidates
+        // [Hard] Develop a Java application generating the necessary data structures
+        // to represent the candidates to be used once the RMI server side is launched.
+        // This application could be used by the administrator of the vote to have
+        // him/her fill up the needed information and serialize the objects to obtain
+        // a file of objects if it doesn't exist already. Then have the server
+        // deserialize the file (assuming it knows where these files are located,
+        // by default, on the same physical machine).
     }
 
     public static List<User> getVoters() {

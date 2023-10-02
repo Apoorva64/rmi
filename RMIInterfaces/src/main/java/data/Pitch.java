@@ -25,9 +25,12 @@ public sealed interface Pitch extends Serializable permits Pitch.TextPitch, Pitc
             this.video = video;
         }
 
+        // TODO: open link in browser
+        //
         @Override
         public void display() {
             System.out.println("My video pitch is at: " + video);
         }
+
     }
 }
