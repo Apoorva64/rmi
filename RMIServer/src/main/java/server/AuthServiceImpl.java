@@ -3,7 +3,7 @@ package server;
 import data.ID;
 import interfaces.AuthenticationFailure;
 import interfaces.ClientPasswordRequester;
-import interfaces.InvalidVoteCredentials;
+import interfaces.HasAlreadyVotedException;
 import interfaces.User;
 
 import java.rmi.RemoteException;
@@ -47,11 +47,11 @@ public class AuthServiceImpl implements AuthService {
         return otps.computeIfAbsent(studentNumber, k -> new OTP()).get();
     }
 
-    public boolean validateOTP(ID studentNumber, String otp) throws InvalidVoteCredentials {
+    public boolean validateOTP(ID studentNumber, String otp) throws HasAlreadyVotedException {
         if (this.otps.containsKey(studentNumber) && this.otps.get(studentNumber).isValid()) {
             this.otps.get(studentNumber).invalidate();
             return this.otps.get(studentNumber).get().equals(otp);
         }
-        throw new InvalidVoteCredentials();
+        throw new HasAlreadyVotedException();
     }
 }

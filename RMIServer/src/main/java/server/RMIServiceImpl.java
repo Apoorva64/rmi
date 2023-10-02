@@ -30,7 +30,7 @@ public class RMIServiceImpl extends UnicastRemoteObject implements RMIService {
     }
 
     @Override
-    public void vote(Map<ID, VoteValue> vote, ID studentNumber, String oneTimePassword) throws RemoteException, InvalidVoteCredentials {
+    public void vote(Map<ID, VoteValue> vote, ID studentNumber, String oneTimePassword) throws RemoteException, HasAlreadyVotedException {
         if (authService.validateOTP(studentNumber, oneTimePassword)) {
             votingService.vote(vote);
         }

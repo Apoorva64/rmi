@@ -4,7 +4,7 @@ import data.ID;
 import data.VoteValue;
 import interfaces.AuthenticationFailure;
 import interfaces.Candidate;
-import interfaces.InvalidVoteCredentials;
+import interfaces.HasAlreadyVotedException;
 import interfaces.RMIService;
 
 import java.rmi.NotBoundException;
@@ -44,7 +44,7 @@ public class Client {
         Map<ID, VoteValue> votes = getVotes(candidates);
         try {
             service.vote(votes, studentNumber, otp);
-        } catch (InvalidVoteCredentials e) {
+        } catch (HasAlreadyVotedException e) {
             System.out.println("You have already voted");
             System.exit(0);
         }

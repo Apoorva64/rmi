@@ -17,7 +17,7 @@ public interface RMIService extends Remote, Serializable {
     /// @return One-time password
     String getVoteMaterial(ID studentNumber, ClientPasswordRequester passwordRequester) throws RemoteException, AuthenticationFailure;
 
-    void vote(Map<ID, VoteValue> vote, ID studentNumber, String oneTimePassword) throws RemoteException, InvalidVoteCredentials;
+    void vote(Map<ID, VoteValue> vote, ID studentNumber, String oneTimePassword) throws RemoteException, HasAlreadyVotedException;
 
     VoteResult requestResult() throws RemoteException;
 }
