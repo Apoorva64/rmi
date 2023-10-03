@@ -58,6 +58,6 @@ public class AuthServiceImpl implements AuthService {
 
     public int getRemainingVoters() {
         // TODO: FIX THIS
-        return (int) (users.voters().size() - otps.entrySet().stream().filter(e -> e.getValue().isValid()).count());
+        return (int) (users.voters().size() - otps.entrySet().stream().filter(e -> !e.getValue().isValid()).count());
     }
 }
