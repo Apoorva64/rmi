@@ -1,16 +1,12 @@
 package server;
 
-import data.ID;
-import data.Pitch;
-import interfaces.Candidate;
 import interfaces.RMIService;
-import interfaces.User;
+import server.config.Config;
 
 import java.io.FileNotFoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.List;
 
 import static data.Utils.exitWithException;
 
@@ -49,9 +45,8 @@ public class Server {
     private static RMIServiceImpl getRmiService() {
         try {
             Config config = Config.fromFile("config.ser");
-            var users = new AuthService.UserList(config.getUsers(), config.getCandidates());
-            var votingService = new VotingServiceImpl(users.candidates());
-            var authService = new AuthServiceImpl(users);
+            var votingService = new VotingServiceImpl(config.getUsers().candidates());
+            var authService = new AuthServiceImpl(config.getUsers());
             return new RMIServiceImpl(votingService, authService, config.getStopCondition());
         } catch (RemoteException | FileNotFoundException e) {
             exitWithException(e);

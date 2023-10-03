@@ -1,4 +1,4 @@
-package server;
+package server.config;
 
 public class StopWithKey implements StopCondition{
     private final Character key;

@@ -3,6 +3,7 @@ package server;
 import data.ID;
 import data.VoteValue;
 import interfaces.*;
+import server.config.StopCondition;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;

@@ -13,5 +13,11 @@ public interface AuthService {
     int getRemainingVoters();
 
     record UserList(List<User> voters, List<Candidate> candidates) {
+        public UserList(List<User> allUsers) {
+            this(
+                    allUsers,
+                    allUsers.stream().filter(u -> u instanceof Candidate).map(u -> (Candidate) u).toList()
+            );
+        }
     }
 }
