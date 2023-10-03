@@ -28,6 +28,7 @@ To use our Java RMI application, follow these steps:
    ```
    mvn compile exec:java -pl RMIServer -Dexec.mainClass="server.Server"
    ```
+   'config.ser' can be used as the configuration file. There are 2 candidates in the file: 123457, 654321. The password for both is 'password'.
 
 3. **Clients**: Launch clients using the following command:
    ```
