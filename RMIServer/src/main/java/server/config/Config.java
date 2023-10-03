@@ -1,12 +1,11 @@
 package server.config;
 
 import data.ID;
+import data.IO;
 import data.Pitch;
-import interfaces.Candidate;
 import interfaces.User;
 import server.AuthService;
 import server.CandidateImpl;
-import server.IO;
 import server.UserImpl;
 
 import java.io.FileNotFoundException;
@@ -15,6 +14,8 @@ import java.rmi.RemoteException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+
+import static data.Utils.exitWithException;
 
 public class Config implements java.io.Serializable {
     private final AuthService.UserList users;
@@ -27,7 +28,7 @@ public class Config implements java.io.Serializable {
         this.stopCondition = stopCondition;
     }
 
-    public static Config getConfig(AuthService authService) throws RemoteException {
+    public static Config inputConfig() throws RemoteException {
         var users = inputUsers();
 
         StopCondition stopCondition = switch (IO.choice("How do you want to stop the vote?", Arrays.asList("When all voters have voted", "When the administrator presses a key", "With a start and end date"), false)) {
@@ -53,7 +54,7 @@ public class Config implements java.io.Serializable {
             String studentNumber = IO.readLine("Enter the student number of user " + (i + 1));
             String password = IO.readLine("Enter the password of user " + (i + 1));
             int isCandidate = IO.choice("Is user " + (i + 1) + " a candidate?", Arrays.asList("Yes", "No"), false);
-            if (isCandidate == 1) {
+            if (isCandidate == 0) {
                 inputCandidate(users, i, studentNumber, password);
             } else {
                 users[i] = new UserImpl(new ID(studentNumber), password);
@@ -66,7 +67,7 @@ public class Config implements java.io.Serializable {
     private static void inputCandidate(User[] users, int i, String studentNumber, String password) throws RemoteException {
         String candidateName = IO.readLine("Enter the name of the candidate");
         int isPitchAVideoOrText = IO.choice("Is the pitch a video or text?", Arrays.asList("Video", "Text"), false);
-        if (isPitchAVideoOrText == 1) {
+        if (isPitchAVideoOrText == 0) {
             String candidatePitch = IO.readLine("Enter the Video URL of the candidate");
             users[i] = new CandidateImpl(new ID(studentNumber), password, candidateName, new Pitch.VideoPitch(candidatePitch));
         } else {
@@ -91,6 +92,7 @@ public class Config implements java.io.Serializable {
     }
 
     public static Config fromFile(String fileName) throws FileNotFoundException {
+        // pwd
         try {
             ID.ids.clear();
             java.io.ObjectInputStream in = new java.io.ObjectInputStream(new java.io.FileInputStream(fileName));
@@ -105,45 +107,46 @@ public class Config implements java.io.Serializable {
     }
 
     public static void main(String[] args) throws RemoteException, FileNotFoundException {
-        // TODO: do not hardcode candidates
-        // [Hard] Develop a Java application generating the necessary data structures
-        // to represent the candidates to be used once the RMI server side is launched.
-        // This application could be used by the administrator of the vote to have
-        // him/her fill up the needed information and serialize the objects to obtain
-        // a file of objects if it doesn't exist already. Then have the server
-        // deserialize the file (assuming it knows where these files are located,
-        // by default, on the same physical machine).
-        Config config = new Config(new AuthService.UserList(List.of(
-                new CandidateImpl(
-                        new ID("123457"), "password", "John Doe",
-                        new Pitch.TextPitch("I am John Doe")),
-                new CandidateImpl(new ID("654321"), "password", "Jane Doe",
-                        new Pitch.TextPitch("I am Jane Doe"))
-        )
+        Config config = new Config(new AuthService.UserList(
+                List.of(
+                        new CandidateImpl(
+                                new ID("123457"), "password", "John Doe",
+                                new Pitch.TextPitch("I am John Doe")),
+                        new CandidateImpl(new ID("654321"), "password", "Jane Doe",
+                                new Pitch.TextPitch("I am Jane Doe"))
+                )
         ),
                 new StartWithoutCondition(), new StopWhenAllUsersHaveVoted());
 
-
         Config.toFile(config, "config.ser");
-        config = Config.fromFile("config.ser");
+        System.out.println("Default config written to config.ser");
 
-        config.getUsers().candidates().forEach(candidate -> {
-            try {
-                System.out.println(candidate.getName());
-            } catch (RemoteException e) {
-                System.err.println("Error reading from file");
-            }
-        });
+        System.out.println("Users: ");
         config.users.voters().forEach(user -> {
             try {
                 System.out.println(user.getStudentNumber());
             } catch (RemoteException e) {
-                System.err.println("Error reading from file");
+                exitWithException(e);
             }
         });
-
+        System.out.println("Start condition: ");
+        System.out.println(config.getStartCondition());
+        System.out.println("End condition:");
         System.out.println(config.getStopCondition());
-        System.exit(0);
+
+        if (IO.choice(
+                "Do you want to write a custom config",
+                List.of("yes", "no"),
+                false
+        ) == 1) {
+            System.exit(0);
+        }
+
+        Config customConfig = Config.inputConfig();
+
+        String fileName = IO.readLine("Enter the name of the file to write the config to");
+        Config.toFile(customConfig, fileName);
+
     }
 
     public AuthService.UserList getUsers() {
@@ -154,4 +157,7 @@ public class Config implements java.io.Serializable {
         return stopCondition;
     }
 
+    public StartCondition getStartCondition() {
+        return startCondition;
+    }
 }

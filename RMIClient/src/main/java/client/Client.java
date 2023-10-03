@@ -1,6 +1,7 @@
 package client;
 
 import data.ID;
+import data.IO;
 import data.VoteValue;
 import interfaces.*;
 
@@ -28,6 +29,15 @@ public class Client {
             var studentNumber = new ID(readLine());
             var otp = getOtp(service, studentNumber);
             vote(candidates, service, studentNumber, otp);
+
+            while (service.isVotingOpen()) {
+                try {
+                    System.out.println("Waiting for result...");
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    exitWithException(e);
+                }
+            }
 
             System.out.println("Result: " + service.requestResult().toPrettyString());
 
@@ -75,19 +85,15 @@ public class Client {
     }
 
     private static VoteValue getVote(Candidate candidate) {
-        Arrays.stream(VoteValue.values()).map(
-                vote -> vote.value() + ": " + vote
-        ).forEach(System.out::println);
-        int vote = 0;
         try {
-            System.out.println("Candidate: " + candidate.getName());
-            candidate.getPitch().display();
+            var possibleVoteValues = Arrays.stream(VoteValue.values()).map(VoteValue::toString).toList();
 
-            System.out.println("Enter your vote: ");
-            vote = Integer.parseInt(readLine());
+            System.out.println("Vote for " + candidate.getName() + " ?");
+            candidate.getPitch().display();
+            int choice = IO.choice("Vote: ", possibleVoteValues, false);
+            return VoteValue.values()[choice];
         } catch (RemoteException e) {
-            exitWithException(e);
+            throw new RuntimeException(e);
         }
-        return VoteValue.fromValue(vote);
     }
 }

@@ -1,8 +1,7 @@
-package server;
+package data;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
@@ -59,7 +58,7 @@ public class IO {
                 System.out.println("Invalid choice.");
             }
         }
-        return choice;
+        return choice - 1; // -1 because we want to return the index
     }
 
     public static Date readDate(String s) {

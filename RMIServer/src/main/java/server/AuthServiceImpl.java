@@ -7,10 +7,8 @@ import interfaces.HasAlreadyVotedException;
 import interfaces.User;
 
 import java.rmi.RemoteException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.StreamSupport;
 
 import static data.Utils.exitWithException;
 
@@ -58,7 +56,6 @@ public class AuthServiceImpl implements AuthService {
     }
 
     public int getRemainingVoters() {
-        // TODO: FIX THIS
         return (int) (users.voters().size() - otps.entrySet().stream().filter(e -> !e.getValue().isValid()).count());
     }
 }

@@ -22,6 +22,7 @@
               modules = [
                 {
                   languages.java.enable = true;
+		  packages = [ pkgs.maven ];
                 }
               ];
             };

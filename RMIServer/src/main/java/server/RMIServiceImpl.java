@@ -3,6 +3,7 @@ package server;
 import data.ID;
 import data.VoteValue;
 import interfaces.*;
+import server.config.StartCondition;
 import server.config.StopCondition;
 import server.config.StopWhenAllUsersHaveVoted;
 
@@ -15,12 +16,14 @@ public class RMIServiceImpl extends UnicastRemoteObject implements RMIService {
     VotingService votingService;
     AuthService authService;
     StopCondition stopCondition;
+    StartCondition startCondition;
 
-    public RMIServiceImpl(VotingService votingService, AuthService authService, StopCondition stopCondition) throws RemoteException {
+    public RMIServiceImpl(VotingService votingService, AuthService authService, StartCondition startCondition, StopCondition stopCondition) throws RemoteException {
         super();
         this.votingService = votingService;
         this.authService = authService;
         this.stopCondition = stopCondition;
+        this.startCondition = startCondition;
         if (stopCondition instanceof StopWhenAllUsersHaveVoted) {
             ((StopWhenAllUsersHaveVoted) stopCondition).setAuthService(authService);
         }
@@ -46,12 +49,6 @@ public class RMIServiceImpl extends UnicastRemoteObject implements RMIService {
         }
         System.out.println(studentNumber + " has voted.");
         System.out.println("Remaining voters: " + authService.getRemainingVoters());
-
-        if (!isVotingOpen()) {
-            System.out.println(votingService.requestResult().toPrettyString());
-            System.out.println("All voters have voted. Shutting down.");
-            System.exit(0);
-        }
     }
 
     @Override
@@ -60,7 +57,7 @@ public class RMIServiceImpl extends UnicastRemoteObject implements RMIService {
     }
 
     public boolean isVotingOpen() throws RemoteException {
-        return !stopCondition.isReached();
+        return !stopCondition.isReached() && startCondition.isReached();
     }
 
 }

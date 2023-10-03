@@ -1,8 +1,10 @@
 package server.config;
 
-public class StopWithKey implements StopCondition {
+import data.Utils;
+
+public record StopWithKey() implements StopCondition {
     @Override
     public boolean isReached() {
-        return false;
+        return Utils.stdinScanner.hasNext(); // wait for user to press any key
     }
 }
