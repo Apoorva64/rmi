@@ -4,6 +4,7 @@ import data.ID;
 import data.VoteValue;
 import interfaces.*;
 import server.config.StopCondition;
+import server.config.StopWhenAllUsersHaveVoted;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -20,6 +21,9 @@ public class RMIServiceImpl extends UnicastRemoteObject implements RMIService {
         this.votingService = votingService;
         this.authService = authService;
         this.stopCondition = stopCondition;
+        if (stopCondition instanceof StopWhenAllUsersHaveVoted) {
+            ((StopWhenAllUsersHaveVoted) stopCondition).setAuthService(authService);
+        }
     }
 
     @Override
@@ -43,7 +47,7 @@ public class RMIServiceImpl extends UnicastRemoteObject implements RMIService {
         System.out.println(studentNumber + " has voted.");
         System.out.println("Remaining voters: " + authService.getRemainingVoters());
 
-        if (authService.getRemainingVoters() == 0) {
+        if (!isVotingOpen()) {
             System.out.println(votingService.requestResult().toPrettyString());
             System.out.println("All voters have voted. Shutting down.");
             System.exit(0);

@@ -26,4 +26,5 @@ public interface RMIService extends Remote, Serializable {
 
     VoteResult requestResult() throws RemoteException;
 
+    boolean isVotingOpen() throws RemoteException;
 }

@@ -3,6 +3,7 @@ package server;
 import data.ID;
 import interfaces.*;
 
+import java.io.Serializable;
 import java.util.List;
 
 public interface AuthService {
@@ -12,7 +13,7 @@ public interface AuthService {
 
     int getRemainingVoters();
 
-    record UserList(List<User> voters, List<Candidate> candidates) {
+    record UserList(List<User> voters, List<Candidate> candidates) implements Serializable {
         public UserList(List<User> allUsers) {
             this(
                     allUsers,

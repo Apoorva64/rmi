@@ -1,5 +1,7 @@
 package server.config;
 
-public interface StartCondition {
+import java.io.Serializable;
+
+public interface StartCondition extends Serializable {
     boolean isReached();
 }

@@ -31,7 +31,7 @@ public class Config implements java.io.Serializable {
         var users = inputUsers();
 
         StopCondition stopCondition = switch (IO.choice("How do you want to stop the vote?", Arrays.asList("When all voters have voted", "When the administrator presses a key", "With a start and end date"), false)) {
-            case 0 -> new StopWhenAllUsersHaveVoted(authService);
+            case 0 -> new StopWhenAllUsersHaveVoted();
             case 1 -> new StopWithKey('c');
             default -> new StopWithDate(new Date());
         };
@@ -113,9 +113,17 @@ public class Config implements java.io.Serializable {
         // a file of objects if it doesn't exist already. Then have the server
         // deserialize the file (assuming it knows where these files are located,
         // by default, on the same physical machine).
-        Config config = new Config(List.of(new CandidateImpl(new ID("123457"), "password", "John Doe", new Pitch.TextPitch("I am John Doe")), new CandidateImpl(new ID("654321"), "password", "Jane Doe", new Pitch.TextPitch("I am Jane Doe")), new UserImpl(new ID("123456"), "password"), new UserImpl(new ID("654321"), "password")), startCondition, new StopWhenAllUsersHaveVoted()
+        Config config = new Config(new AuthService.UserList(List.of(
+                new CandidateImpl(
+                        new ID("123457"), "password", "John Doe",
+                        new Pitch.TextPitch("I am John Doe")),
+                new CandidateImpl(new ID("654321"), "password", "Jane Doe",
+                        new Pitch.TextPitch("I am Jane Doe"))
+        )
+        ),
+                new StartWithoutCondition(), new StopWhenAllUsersHaveVoted());
 
-        );
+
         Config.toFile(config, "config.ser");
         config = Config.fromFile("config.ser");
 
