@@ -8,7 +8,6 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class VoteResultImpl extends UnicastRemoteObject implements VoteResult {
     private final Map<ID, Integer> result;
@@ -26,7 +25,12 @@ public class VoteResultImpl extends UnicastRemoteObject implements VoteResult {
             builder.append(candidate.getName()).append(": ").append(result.get(candidate.getStudentNumber())).append("\n");
         }
 
-        builder.append("Winner: ").append(getWinner(candidates).getName()).append("\n");
+        var winner = getWinner(candidates);
+        if (winner == null) {
+            builder.append("No winner\n");
+        } else {
+            builder.append("Winner: ").append(winner.getName()).append("\n");
+        }
         return builder.toString();
     }
 
@@ -40,6 +44,6 @@ public class VoteResultImpl extends UnicastRemoteObject implements VoteResult {
                 winner = candidate;
             }
         }
-        return Objects.requireNonNull(winner);
+        return winner;
     }
 }
