@@ -10,6 +10,8 @@ public interface AuthService {
 
     boolean validateOTP(ID studentNumber, String otp) throws HasAlreadyVotedException;
 
+    int getRemainingVoters();
+
     record UserList(List<User> voters, List<Candidate> candidates) {
     }
 }

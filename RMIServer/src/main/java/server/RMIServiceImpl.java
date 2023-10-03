@@ -12,11 +12,13 @@ import java.util.Map;
 public class RMIServiceImpl extends UnicastRemoteObject implements RMIService {
     VotingService votingService;
     AuthService authService;
+    StopCondition stopCondition;
 
-    public RMIServiceImpl(VotingService votingService, AuthService authService) throws RemoteException {
+    public RMIServiceImpl(VotingService votingService, AuthService authService, StopCondition stopCondition) throws RemoteException {
         super();
         this.votingService = votingService;
         this.authService = authService;
+        this.stopCondition = stopCondition;
     }
 
     @Override
@@ -30,9 +32,20 @@ public class RMIServiceImpl extends UnicastRemoteObject implements RMIService {
     }
 
     @Override
-    public void vote(Map<ID, VoteValue> vote, ID studentNumber, String oneTimePassword) throws RemoteException, HasAlreadyVotedException {
+    public void vote(Map<ID, VoteValue> vote, ID studentNumber, String oneTimePassword) throws RemoteException, HasAlreadyVotedException, VotingIsClosedException {
+        if (!isVotingOpen()) {
+            throw new VotingIsClosedException();
+        }
         if (authService.validateOTP(studentNumber, oneTimePassword)) {
             votingService.vote(vote);
+        }
+        System.out.println(studentNumber + " has voted.");
+        System.out.println("Remaining voters: " + authService.getRemainingVoters());
+
+        if (authService.getRemainingVoters() == 0) {
+            System.out.println(votingService.requestResult().toPrettyString());
+            System.out.println("All voters have voted. Shutting down.");
+            System.exit(0);
         }
     }
 
@@ -40,4 +53,9 @@ public class RMIServiceImpl extends UnicastRemoteObject implements RMIService {
     public VoteResult requestResult() throws RemoteException {
         return votingService.requestResult();
     }
+
+    public boolean isVotingOpen() throws RemoteException {
+        return !stopCondition.isReached();
+    }
+
 }

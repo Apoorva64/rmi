@@ -9,6 +9,7 @@ import interfaces.User;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.StreamSupport;
 
 import static data.Utils.exitWithException;
 
@@ -53,5 +54,9 @@ public class AuthServiceImpl implements AuthService {
             return this.otps.get(studentNumber).get().equals(otp);
         }
         throw new HasAlreadyVotedException();
+    }
+
+    public int getRemainingVoters() {
+        return (int) (users.voters().size() - otps.entrySet().stream().filter(e -> e.getValue().isValid()).count()) - 1;
     }
 }

@@ -2,10 +2,7 @@ package client;
 
 import data.ID;
 import data.VoteValue;
-import interfaces.AuthenticationFailure;
-import interfaces.Candidate;
-import interfaces.HasAlreadyVotedException;
-import interfaces.RMIService;
+import interfaces.*;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -44,7 +41,7 @@ public class Client {
         Map<ID, VoteValue> votes = getVotes(candidates);
         try {
             service.vote(votes, studentNumber, otp);
-        } catch (HasAlreadyVotedException e) {
+        } catch (HasAlreadyVotedException | VotingIsClosedException e) {
             System.out.println("You have already voted");
             System.exit(0);
         }

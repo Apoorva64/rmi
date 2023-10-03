@@ -22,7 +22,8 @@ public interface RMIService extends Remote, Serializable {
     //  (date of the vote, name of the voter (by calling back a
     //  method on the client stub), ...).
 
-    void vote(Map<ID, VoteValue> vote, ID studentNumber, String oneTimePassword) throws RemoteException, HasAlreadyVotedException;
+    void vote(Map<ID, VoteValue> vote, ID studentNumber, String oneTimePassword) throws RemoteException, HasAlreadyVotedException, VotingIsClosedException;
 
     VoteResult requestResult() throws RemoteException;
+
 }
