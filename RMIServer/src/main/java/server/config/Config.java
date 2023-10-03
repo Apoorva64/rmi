@@ -33,7 +33,7 @@ public class Config implements java.io.Serializable {
         StopCondition stopCondition = switch (IO.choice("How do you want to stop the vote?", Arrays.asList("When all voters have voted", "When the administrator presses a key", "With a start and end date"), false)) {
             case 0 -> new StopWhenAllUsersHaveVoted(authService);
             case 1 -> new StopWithKey('c');
-            default -> new StopWithDate(new Date(), new Date());
+            default -> new StopWithDate(new Date());
         };
 
         if (stopCondition instanceof StopWithDate) {
