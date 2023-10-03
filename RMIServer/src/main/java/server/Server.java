@@ -28,21 +28,21 @@ public class Server {
             registry.rebind(RMIService.RMI_NAME, implementation);
             System.out.println("Bound!");
             System.out.println("Server will wait forever for messages.");
-//            while (true) {
-//                try {
-//                    Thread.sleep(1000);
-//                    assert implementation != null;
-//                    if (implementation.isVotingOpen()) {
-//                        System.out.println("Voting is open.");
-//                    } else {
-//                        System.out.println("Voting is closed.");
-//                        System.out.println(implementation.requestResult().toPrettyString());
-//                        System.exit(0);
-//                    }
-//                } catch (InterruptedException e) {
-//                    exitWithException(e);
-//                }
-//            }
+            while (true) {
+                try {
+                    Thread.sleep(1000);
+                    assert implementation != null;
+                    if (implementation.isVotingOpen()) {
+                        System.out.println("Voting is open.");
+                    } else {
+                        System.out.println("Voting is closed.");
+                        System.out.println(implementation.requestResult().toPrettyString());
+                        System.exit(0);
+                    }
+                } catch (InterruptedException e) {
+                    exitWithException(e);
+                }
+            }
         } catch (RemoteException e) {
             exitWithException(e);
         }

@@ -9,6 +9,7 @@ import interfaces.User;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.StreamSupport;
 
 import static data.Utils.exitWithException;
@@ -18,7 +19,7 @@ import static data.Utils.exitWithException;
  */
 public class AuthServiceImpl implements AuthService {
     private static UserList users;
-    Map<ID, OTP> otps = new HashMap<>();
+    Map<ID, OTP> otps = new ConcurrentHashMap<>();
 
     protected AuthServiceImpl(UserList users) throws RemoteException {
         super();
